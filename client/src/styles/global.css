@@ -1,0 +1,7 @@
+body {
+  margin: 0;
+  background: var(--bg-dark);
+  color: white;
+  direction: rtl;
+  font-family: "Vazirmatn", sans-serif;
+}

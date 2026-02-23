@@ -1,0 +1,4 @@
+module.exports = {
+  MAX_SESSION_DURATION_HOURS: 12,
+  DEFAULT_CURRENCY: "IRR",
+};
