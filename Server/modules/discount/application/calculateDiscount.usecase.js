@@ -11,7 +11,7 @@ class CalculateDiscountUseCase {
   async execute({
     subtotal,
     customer,
-    resourceTypeId,
+    resourceType,
     discountCode,
     now = new Date(),
   }) {
@@ -35,7 +35,7 @@ class CalculateDiscountUseCase {
       // محدودیت resourceType
       if (
         d.applicableResourceTypes?.length &&
-        !d.applicableResourceTypes.some((id) => id.equals(resourceTypeId))
+        !d.applicableResourceTypes.some((id) => id.equals(resourceType))
       ) {
         return false;
       }

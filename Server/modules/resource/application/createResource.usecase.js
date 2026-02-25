@@ -3,10 +3,10 @@ class CreateResourceUseCase {
     this.resourceRepository = resourceRepository;
   }
 
-  async execute({ name, resourceTypeId, capacity }) {
+  async execute({ name, resourceType, capacity }) {
     return this.resourceRepository.create({
       name,
-      resourceTypeId,
+      resourceType,
       capacity,
     });
   }

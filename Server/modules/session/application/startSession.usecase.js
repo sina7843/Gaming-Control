@@ -38,7 +38,7 @@ class StartSessionUseCase {
 
       const rule = await this.resolvePricingRuleUseCase.execute({
         resourceId: resource._id,
-        resourceTypeId: resource.resourceTypeId,
+        resourceType: resource.resourceType,
         seatCount,
         date: new Date(),
       });

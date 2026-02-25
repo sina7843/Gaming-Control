@@ -4,6 +4,7 @@ const {
   createResourceUseCase,
   updateResourceStatusUseCase,
   getResourceUseCase,
+  listResourcesUseCase,
 } = require("../../container");
 
 // ==============================
@@ -11,15 +12,23 @@ const {
 // ==============================
 
 exports.createResource = asyncHandler(async (req, res) => {
-  const { name, resourceTypeId, capacity } = req.body;
+  const { name, resourceType, capacity } = req.body;
 
   const resource = await createResourceUseCase.execute({
     name,
-    resourceTypeId,
+    resourceType,
     capacity,
   });
 
   res.status(201).json(resource);
+});
+
+// ==============================
+// List Resources (Admin + Staff)
+// ==============================
+exports.listResources = asyncHandler(async (req, res) => {
+  const resources = await listResourcesUseCase.execute();
+  res.json(resources);
 });
 
 // ==============================

@@ -27,6 +27,10 @@ router.post(
 );
 
 // ==============================
+// List Resources (Admin + Staff)
+// ==============================
+router.get("/", authenticate, controller.listResources);
+// ==============================
 // Get Resource (Admin + Staff)
 // ==============================
 

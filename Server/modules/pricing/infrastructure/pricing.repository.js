@@ -1,10 +1,10 @@
 const PricingRule = require("./pricing.model");
 
 class PricingRepository {
-  async findActiveByTarget({ resourceId, resourceTypeId }) {
+  async findActiveByTarget({ resourceId, resourceType }) {
     return PricingRule.find({
       isActive: true,
-      $or: [{ resourceId }, { resourceTypeId }],
+      $or: [{ resourceId }, { resourceType }],
     });
   }
 }

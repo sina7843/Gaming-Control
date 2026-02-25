@@ -3,10 +3,10 @@ class ResolvePricingRuleUseCase {
     this.pricingRepository = pricingRepository;
   }
 
-  async execute({ resourceId, resourceTypeId, seatCount, date = new Date() }) {
+  async execute({ resourceId, resourceType, seatCount, date = new Date() }) {
     const rules = await this.pricingRepository.findActiveByTarget({
       resourceId,
-      resourceTypeId,
+      resourceType,
     });
 
     const {

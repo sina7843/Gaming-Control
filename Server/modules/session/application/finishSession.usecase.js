@@ -44,7 +44,7 @@ class FinishSessionUseCase {
       const discountResult = await this.discountUseCase.execute({
         subtotal,
         customer: session.customerId,
-        resourceTypeId: session.resourceId,
+        resourceType: session.resourceId,
         discountCode,
         now,
       });

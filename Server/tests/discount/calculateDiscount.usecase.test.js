@@ -30,7 +30,7 @@ describe("CalculateDiscountUseCase", () => {
     const result = await useCase.execute({
       subtotal: 1000,
       customer: { tags: ["VIP"] },
-      resourceTypeId: "r1",
+      resourceType: "r1",
       discountCode: "SAVE10",
     });
 
@@ -69,7 +69,7 @@ describe("CalculateDiscountUseCase", () => {
     const result = await useCase.execute({
       subtotal: 1000,
       customer: { tags: ["VIP"] },
-      resourceTypeId: "r1",
+      resourceType: "r1",
     });
 
     expect(result.appliedDiscounts.length).toBe(2);

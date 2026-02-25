@@ -12,6 +12,8 @@ const PricingRepository = require("../modules/pricing/infrastructure/pricing.rep
 
 const CustomerRepository = require("../modules/customer/infrastructure/customer.repository");
 
+const UserRepository = require("../modules/auth/infrastructure/user.repository");
+
 // ==============================
 // UseCases - Pricing
 // ==============================
@@ -21,9 +23,11 @@ const ResolvePricingRuleUseCase = require("../modules/pricing/application/resolv
 // ==============================
 // UseCases - Discount
 // ==============================
-
+const ListResourcesUseCase = require("../modules/resource/application/listResources.usecase");
 const CreatePricingRuleUseCase = require("../modules/pricing/application/createPricingRule.usecase");
 const GetPricingRulesUseCase = require("../modules/pricing/application/getPricingRules.usecase");
+const RegisterUseCase = require("../modules/auth/application/register.usecase");
+const LoginUseCase = require("../modules/auth/application/login.usecase");
 
 const CreateDiscountUseCase = require("../modules/discount/application/createDiscount.usecase");
 const GetDiscountsUseCase = require("../modules/discount/application/getDiscounts.usecase");
@@ -70,11 +74,17 @@ const pricingRepository = new PricingRepository();
 const customerRepository = new CustomerRepository();
 const TransactionManager = require("../shared/database/transaction.manager");
 
-const transactionManager = new TransactionManager();
+const userRepository = new UserRepository();
 
+const transactionManager = new TransactionManager();
+const listResourcesUseCase = new ListResourcesUseCase({
+  resourceRepository,
+});
 const createPricingRuleUseCase = new CreatePricingRuleUseCase({
   pricingRepository,
 });
+const registerUseCase = new RegisterUseCase({ userRepository });
+const loginUseCase = new LoginUseCase({ userRepository });
 
 const getPricingRulesUseCase = new GetPricingRulesUseCase({
   pricingRepository,
@@ -146,7 +156,8 @@ module.exports = {
   startSessionUseCase,
   updateSeatUseCase,
   finishSessionUseCase,
-
+  registerUseCase,
+  loginUseCase,
   createResourceUseCase,
   updateResourceStatusUseCase,
   getResourceUseCase,
@@ -155,6 +166,7 @@ module.exports = {
   createDiscountUseCase,
   getDiscountsUseCase,
   createCustomerUseCase,
+  listResourcesUseCase,
   updateCustomerTagsUseCase,
   getCustomerUseCase,
 };

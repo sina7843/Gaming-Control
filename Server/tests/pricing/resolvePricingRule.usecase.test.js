@@ -7,7 +7,7 @@ describe("ResolvePricingRuleUseCase", () => {
         {
           _id: "1",
           resourceId: null,
-          resourceTypeId: "type1",
+          resourceType: "type1",
           seatMin: 1,
           seatMax: 5,
           pricingModel: "per_hour",
@@ -17,7 +17,7 @@ describe("ResolvePricingRuleUseCase", () => {
         {
           _id: "2",
           resourceId: null,
-          resourceTypeId: "type1",
+          resourceType: "type1",
           seatMin: 1,
           seatMax: 5,
           pricingModel: "per_hour",
@@ -33,7 +33,7 @@ describe("ResolvePricingRuleUseCase", () => {
 
     const result = await useCase.execute({
       resourceId: "r1",
-      resourceTypeId: "type1",
+      resourceType: "type1",
       seatCount: 2,
       date: new Date(),
     });
@@ -53,7 +53,7 @@ describe("ResolvePricingRuleUseCase", () => {
     await expect(
       useCase.execute({
         resourceId: "r1",
-        resourceTypeId: "type1",
+        resourceType: "type1",
         seatCount: 2,
         date: new Date(),
       }),

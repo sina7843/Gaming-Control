@@ -6,13 +6,15 @@ const {
   FLAT,
 } = require("../../../shared/constants/pricingModels");
 
+const ResourceType = require("../../resource/domain/resourceType.enum");
+
 const pricingRuleSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
 
-    resourceTypeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ResourceType",
+    resourceType: {
+      type: String,
+      enum: Object.values(ResourceType),
     },
 
     resourceId: {
@@ -44,11 +46,11 @@ const pricingRuleSchema = new mongoose.Schema(
 );
 
 pricingRuleSchema.index({ resourceId: 1 });
-pricingRuleSchema.index({ resourceTypeId: 1 });
+pricingRuleSchema.index({ resourceType: 1 });
 pricingRuleSchema.index({ priority: -1 });
 pricingRuleSchema.index({ isActive: 1 });
 pricingRuleSchema.index({ isActive: 1, resourceId: 1, priority: -1 });
-pricingRuleSchema.index({ isActive: 1, resourceTypeId: 1, priority: -1 });
+pricingRuleSchema.index({ isActive: 1, resourceType: 1, priority: -1 });
 
 const PricingRule = mongoose.model("PricingRule", pricingRuleSchema);
 
