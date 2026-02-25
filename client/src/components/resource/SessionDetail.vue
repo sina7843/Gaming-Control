@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { updateSeat } from "../../api/session.api";
 import { useSessionStore } from "../../store/session.store";
 

@@ -12,15 +12,12 @@
         <RouterView />
       </div>
     </div>
-    <ToastContainer />
   </div>
 </template>
 
 <script setup lang="ts">
 import Topbar from "../components/shared/Topbar.vue";
 import Sidebar from "../components/shared/Sidebar.vue";
-import ToastContainer from '../components/shared/ToastContainer.vue'
-
 </script>
 
 <style scoped>

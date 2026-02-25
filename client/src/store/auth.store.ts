@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import { loginApi } from "../api/auth.api";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
-interface UserPayload {
+export type UserRole = "admin" | "staff";
+
+export interface UserPayload {
   userId: string;
-  role: string;
+  role: UserRole;
 }
 
 export const useAuthStore = defineStore("auth", {
@@ -25,7 +27,7 @@ export const useAuthStore = defineStore("auth", {
       this.token = result.token;
       localStorage.setItem("token", result.token);
 
-      this.user = jwtDecode(result.token);
+      this.user = jwtDecode<UserPayload>(result.token);
     },
 
     logout() {
@@ -36,7 +38,7 @@ export const useAuthStore = defineStore("auth", {
 
     initialize() {
       if (this.token) {
-        this.user = jwtDecode(this.token);
+        this.user = jwtDecode<UserPayload>(this.token);
       }
     },
   },

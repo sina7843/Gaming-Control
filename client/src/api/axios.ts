@@ -18,11 +18,13 @@ api.interceptors.response.use(
   (error) => {
     const toast = useToastStore();
 
-    if (error.response?.data?.message) {
-      toast.show(error.response.data.message, "error");
-    } else {
-      toast.show("خطای غیرمنتظره رخ داد", "error");
-    }
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      "خطای غیرمنتظره رخ داد";
+
+    // اگر نمی‌خوای برای بعضی درخواست‌ها toast بخوره، اینجا شرط اضافه می‌کنیم
+    toast.error("خطا", message);
 
     return Promise.reject(error);
   },

@@ -1,0 +1,57 @@
+:root {
+  --bg-0: #050814;
+  --bg-1: #070a13;
+  --panel: rgba(10, 14, 28, 0.72);
+  --stroke: rgba(255, 255, 255, 0.08);
+  --stroke-2: rgba(0, 245, 255, 0.22);
+
+  --cyan: #00f5ff;
+  --green: #00ffa3;
+  --purple: #9747ff;
+  --red: #ff005c;
+
+  --text: #eaf2ff;
+  --muted: rgba(234, 242, 255, 0.7);
+}
+
+.neon-glass {
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(0, 245, 255, 0.04) inset;
+  backdrop-filter: blur(18px);
+}
+
+.neon-outline {
+  border: 1px solid rgba(0, 245, 255, 0.18);
+  box-shadow: 0 0 0 1px rgba(0, 245, 255, 0.06) inset;
+}
+
+.neon-focus:focus-within {
+  border-color: rgba(0, 245, 255, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(0, 245, 255, 0.12) inset,
+    0 0 22px rgba(0, 245, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.neon-title {
+  font-weight: 900;
+  letter-spacing: -0.2px;
+  color: var(--text);
+}
+
+.neon-accent {
+  color: var(--cyan);
+  text-shadow: 0 0 18px rgba(0, 245, 255, 0.22);
+}
+
+.neon-muted {
+  color: var(--muted);
+}
+
+.neon-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}

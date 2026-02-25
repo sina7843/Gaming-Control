@@ -94,18 +94,25 @@ const router = createRouter({
 // Navigation Guard
 // =========================
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const auth = useAuthStore();
   auth.initialize();
+
+  // اگر لاگین هست و می‌خواد بره /login
+  if (to.path === "/login" && auth.isAuthenticated) {
+    return next("/live");
+  }
 
   // Auth check
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return next("/login");
   }
 
-  // Role check
-  if (to.meta.role && !auth.user) {
-    return next("/live");
+  // Role check (واقعی)
+  const requiredRole = to.meta.role as string | undefined;
+  if (requiredRole) {
+    if (!auth.user) return next("/live");
+    if (auth.user.role !== requiredRole) return next("/live");
   }
 
   next();
