@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const ResourceType = require("../domain/resourceType.enum");
 const {
   AVAILABLE,
   IN_USE,
@@ -11,18 +10,16 @@ const resourceSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      trim: true,
     },
 
     resourceType: {
       type: String,
-      enum: Object.values(ResourceType),
       required: true,
     },
 
     capacity: {
       type: Number,
-      min: 1,
+      default: 1,
     },
 
     status: {
@@ -34,31 +31,12 @@ const resourceSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
-      index: true,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
-//
-// ==============================
-// Indexes
-// ==============================
-//
-// برای گزارش‌گیری
-resourceSchema.index({ createdAt: -1 });
-resourceSchema.index({ name: 1, resourceType: 1 }, { unique: true });
 resourceSchema.index({ status: 1 });
 resourceSchema.index({ resourceType: 1 });
 
-//
-// ==============================
-// Export
-// ==============================
-//
-
-const Resource = mongoose.model("Resource", resourceSchema);
-
-module.exports = Resource;
+module.exports = mongoose.model("Resource", resourceSchema);

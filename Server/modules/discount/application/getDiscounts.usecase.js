@@ -3,8 +3,8 @@ class GetDiscountsUseCase {
     this.discountRepository = discountRepository;
   }
 
-  async execute() {
-    return this.discountRepository.findActive();
+  async execute(filter) {
+    return this.discountRepository.findAll(filter);
   }
 }
 

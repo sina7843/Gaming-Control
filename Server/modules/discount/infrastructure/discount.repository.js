@@ -1,27 +1,52 @@
 const Discount = require("./discount.model");
 
 class DiscountRepository {
-  async findActive(options = {}) {
-    return Discount.find({ isActive: true }, null, options);
+  async create(data) {
+    return Discount.create(data);
   }
 
-  async incrementUsageIfAvailable(discountId, mongoSession) {
-    const result = await Discount.updateOne(
+  async findActive() {
+    return Discount.find({ isActive: true });
+  }
+
+  async findAll(filter = {}) {
+    return Discount.find(filter).sort({ priority: -1 });
+  }
+
+  async findById(id) {
+    return Discount.findById(id);
+  }
+
+  async findByCode(code) {
+    return Discount.findOne({ code: code.toUpperCase() });
+  }
+
+  async update(id, data) {
+    return Discount.findByIdAndUpdate(id, data, {
+      new: true,
+    });
+  }
+
+  async softDelete(id) {
+    return Discount.findByIdAndUpdate(id, { isActive: false }, { new: true });
+  }
+
+  async resetUsage(id) {
+    return Discount.findByIdAndUpdate(id, { usedCount: 0 }, { new: true });
+  }
+
+  async incrementUsageIfAvailable(id, mongoSession) {
+    return Discount.findOneAndUpdate(
       {
-        _id: discountId,
+        _id: id,
         $or: [
-          { maxUsage: { $exists: false } },
-          { maxUsage: null },
-          { $expr: { $lt: ["$usedCount", "$maxUsage"] } },
+          { usageLimit: { $exists: false } },
+          { usedCount: { $lt: "$usageLimit" } },
         ],
       },
       { $inc: { usedCount: 1 } },
       { session: mongoSession },
     );
-
-    if (result.modifiedCount === 0) {
-      throw new Error("Discount usage limit reached");
-    }
   }
 }
 

@@ -51,6 +51,7 @@ class StartSessionUseCase {
           customerId,
           startedAt: now,
           status: ACTIVE,
+          isActive: true,
           segments: [
             {
               startedAt: now,
@@ -58,6 +59,12 @@ class StartSessionUseCase {
               appliedRuleId: rule._id,
               pricingModel: rule.pricingModel,
               rate: rule.price,
+
+              // 🔥 V2 fields
+              minimumMinutes: rule.minimumMinutes || 0,
+              roundingMinutes: rule.roundingMinutes || 1,
+              tiers: rule.tiers || [],
+
               cost: 0,
             },
           ],

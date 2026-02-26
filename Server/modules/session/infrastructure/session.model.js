@@ -18,6 +18,11 @@ const segmentSchema = new mongoose.Schema(
       required: true,
     },
 
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+
     endedAt: {
       type: Date,
     },
@@ -45,6 +50,28 @@ const segmentSchema = new mongoose.Schema(
       min: 0,
     },
 
+    // 🔥 V2 Pricing Fields
+
+    minimumMinutes: {
+      type: Number,
+      default: 0,
+    },
+
+    roundingMinutes: {
+      type: Number,
+      default: 1,
+    },
+
+    tiers: {
+      type: [
+        {
+          upToMinutes: Number,
+          price: Number,
+        },
+      ],
+      default: [],
+    },
+
     cost: {
       type: Number,
       default: 0,
@@ -55,7 +82,6 @@ const segmentSchema = new mongoose.Schema(
     _id: false,
   },
 );
-
 //
 // ==============================
 // Session Schema
@@ -117,6 +143,15 @@ const sessionSchema = new mongoose.Schema(
       type: String,
       uppercase: true,
       trim: true,
+    },
+    taxRate: {
+      type: Number,
+      default: 0,
+    },
+
+    taxAmount: {
+      type: Number,
+      default: 0,
     },
   },
   {

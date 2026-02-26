@@ -10,12 +10,30 @@ const controller = require("./session.controller");
 
 const router = express.Router();
 
-router.post("/", validate(startSessionSchema), controller.startSession);
+const authenticate = require("../../shared/middleware/auth.middleware");
+const authorize = require("../../shared/middleware/role.middleware");
+router.get("/", authenticate, controller.getAll);
 
-router.patch("/:id/seat", validate(updateSeatSchema), controller.updateSeat);
+router.get("/active", authenticate, controller.getActive);
 
+router.get("/report", authenticate, authorize("admin"), controller.report);
+
+router.get("/:id", authenticate, controller.getById);
+router.post(
+  "/",
+  authenticate,
+  validate(startSessionSchema),
+  controller.startSession,
+);
+router.patch(
+  "/:id/seat",
+  authenticate,
+  validate(updateSeatSchema),
+  controller.updateSeat,
+);
 router.post(
   "/:id/finish",
+  authenticate,
   validate(finishSessionSchema),
   controller.finishSession,
 );

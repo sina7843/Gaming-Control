@@ -10,37 +10,52 @@ const ResourceType = require("../../resource/domain/resourceType.enum");
 
 const pricingRuleSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: String,
 
-    resourceType: {
-      type: String,
-      enum: Object.values(ResourceType),
-    },
-
+    resourceType: String,
     resourceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Resource",
     },
 
-    seatMin: { type: Number },
-    seatMax: { type: Number },
-
-    dayOfWeek: { type: [Number], default: [] },
-
-    startTime: { type: String },
-    endTime: { type: String },
-
     pricingModel: {
       type: String,
-      enum: [PER_HOUR, PER_MINUTE, PER_SEAT_HOUR, FLAT],
+      enum: ["PER_HOUR", "PER_MINUTE", "PER_SEAT_HOUR", "FLAT"],
       required: true,
     },
 
-    price: { type: Number, required: true },
+    price: Number,
 
-    priority: { type: Number, default: 0 },
+    // 🔹 زمان
+    minimumMinutes: {
+      type: Number,
+      default: 0,
+    },
 
-    isActive: { type: Boolean, default: true },
+    roundingMinutes: {
+      type: Number,
+      default: 1,
+    },
+
+    // 🔹 بازه زمانی
+    startTime: String, // "18:00"
+    endTime: String, // "23:59"
+
+    dayOfWeek: {
+      type: [Number], // 0-6
+      default: [],
+    },
+
+    // 🔹 پلکانی
+    tiers: [
+      {
+        upToMinutes: Number,
+        price: Number,
+      },
+    ],
+
+    priority: Number,
+    isActive: Boolean,
   },
   { timestamps: true },
 );

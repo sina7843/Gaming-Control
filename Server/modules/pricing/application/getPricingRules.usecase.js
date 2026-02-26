@@ -3,8 +3,8 @@ class GetPricingRulesUseCase {
     this.pricingRepository = pricingRepository;
   }
 
-  async execute() {
-    return this.pricingRepository.findActiveByTarget({});
+  async execute(filter) {
+    return this.pricingRepository.findAll(filter);
   }
 }
 

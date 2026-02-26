@@ -3,17 +3,27 @@
 // ==============================
 
 const SessionRepository = require("../modules/session/infrastructure/session.repository");
-
+const GetResourcesUseCase = require("../modules/resource/application/getResources.usecase");
+const UpdateResourceUseCase = require("../modules/resource/application/updateResource.usecase");
+const DeleteResourceUseCase = require("../modules/resource/application/deleteResource.usecase");
 const ResourceRepository = require("../modules/resource/infrastructure/resource.repository");
-
+const GetCustomersUseCase = require("../modules/customer/application/getCustomers.usecase");
+const UpdateCustomerUseCase = require("../modules/customer/application/updateCustomer.usecase");
+const DeleteCustomerUseCase = require("../modules/customer/application/deleteCustomer.usecase");
 const DiscountRepository = require("../modules/discount/infrastructure/discount.repository");
 
 const PricingRepository = require("../modules/pricing/infrastructure/pricing.repository");
 
 const CustomerRepository = require("../modules/customer/infrastructure/customer.repository");
-
+const GetSessionsUseCase = require("../modules/session/application/getSessions.usecase");
+const GetActiveSessionsUseCase = require("../modules/session/application/getActiveSessions.usecase");
+const GetSessionReportUseCase = require("../modules/session/application/getSessionReport.usecase");
 const UserRepository = require("../modules/auth/infrastructure/user.repository");
-
+const UpdateDiscountUseCase = require("../modules/discount/application/updateDiscount.usecase");
+const DeleteDiscountUseCase = require("../modules/discount/application/deleteDiscount.usecase");
+const ResetDiscountUsageUseCase = require("../modules/discount/application/resetDiscountUsage.usecase");
+const UpdatePricingRuleUseCase = require("../modules/pricing/application/updatePricingRule.usecase");
+const DeletePricingRuleUseCase = require("../modules/pricing/application/deletePricingRule.usecase");
 // ==============================
 // UseCases - Pricing
 // ==============================
@@ -73,9 +83,25 @@ const discountRepository = new DiscountRepository();
 const pricingRepository = new PricingRepository();
 const customerRepository = new CustomerRepository();
 const TransactionManager = require("../shared/database/transaction.manager");
+const getCustomersUseCase = new GetCustomersUseCase({
+  customerRepository,
+});
 
+const updateCustomerUseCase = new UpdateCustomerUseCase({
+  customerRepository,
+});
+
+const deleteCustomerUseCase = new DeleteCustomerUseCase({
+  customerRepository,
+});
 const userRepository = new UserRepository();
+const updatePricingRuleUseCase = new UpdatePricingRuleUseCase({
+  pricingRepository,
+});
 
+const deletePricingRuleUseCase = new DeletePricingRuleUseCase({
+  pricingRepository,
+});
 const transactionManager = new TransactionManager();
 const listResourcesUseCase = new ListResourcesUseCase({
   resourceRepository,
@@ -97,7 +123,17 @@ const getDiscountsUseCase = new GetDiscountsUseCase({ discountRepository });
 const resolvePricingRuleUseCase = new ResolvePricingRuleUseCase({
   pricingRepository,
 });
+const updateDiscountUseCase = new UpdateDiscountUseCase({
+  discountRepository,
+});
 
+const deleteDiscountUseCase = new DeleteDiscountUseCase({
+  discountRepository,
+});
+
+const resetDiscountUsageUseCase = new ResetDiscountUsageUseCase({
+  discountRepository,
+});
 const calculateDiscountUseCase = new CalculateDiscountUseCase({
   discountRepository,
 });
@@ -108,7 +144,27 @@ const startSessionUseCase = new StartSessionUseCase({
   resolvePricingRuleUseCase,
   transactionManager,
 });
+const getResourcesUseCase = new GetResourcesUseCase({
+  resourceRepository,
+});
 
+const updateResourceUseCase = new UpdateResourceUseCase({
+  resourceRepository,
+});
+const getSessionsUseCase = new GetSessionsUseCase({
+  sessionRepository,
+});
+
+const getActiveSessionsUseCase = new GetActiveSessionsUseCase({
+  sessionRepository,
+});
+
+const getSessionReportUseCase = new GetSessionReportUseCase({
+  sessionRepository,
+});
+const deleteResourceUseCase = new DeleteResourceUseCase({
+  resourceRepository,
+});
 const updateSeatUseCase = new UpdateSeatUseCase({
   sessionRepository,
   resourceRepository,
@@ -122,6 +178,7 @@ const finishSessionUseCase = new FinishSessionUseCase({
   discountUseCase: calculateDiscountUseCase,
   discountRepository,
   transactionManager,
+  customerRepository,
 });
 
 const createResourceUseCase = new CreateResourceUseCase({
@@ -169,4 +226,18 @@ module.exports = {
   listResourcesUseCase,
   updateCustomerTagsUseCase,
   getCustomerUseCase,
+  updatePricingRuleUseCase,
+  deletePricingRuleUseCase,
+  updateDiscountUseCase,
+  deleteDiscountUseCase,
+  resetDiscountUsageUseCase,
+  getResourcesUseCase,
+  updateResourceUseCase,
+  deleteResourceUseCase,
+  getCustomersUseCase,
+  updateCustomerUseCase,
+  deleteCustomerUseCase,
+  getSessionsUseCase,
+  getActiveSessionsUseCase,
+  getSessionReportUseCase,
 };

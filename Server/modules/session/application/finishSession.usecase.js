@@ -7,6 +7,8 @@ const { ACTIVE, FINISHED } = require("../../../shared/constants/sessionStatus");
 
 const { AVAILABLE } = require("../../../shared/constants/resourceStatus");
 
+const SystemSetting = require("../../system/infrastructure/systemSetting.model");
+
 class FinishSessionUseCase {
   constructor({
     sessionRepository,
@@ -34,12 +36,36 @@ class FinishSessionUseCase {
 
       const now = new Date();
 
+      // ==============================
+      // Close Last Segment
+      // ==============================
+
       const lastSegment = session.segments[session.segments.length - 1];
 
       lastSegment.endedAt = now;
-      lastSegment.cost = calculateSegmentCost(lastSegment);
+      lastSegment.isActive = false;
+
+      const segmentResult = calculateSegmentCost(lastSegment);
+
+      // اگر تابع جدید object برگرداند
+      if (typeof segmentResult === "object") {
+        lastSegment.cost = Math.round(segmentResult.cost);
+        lastSegment.durationMinutes = segmentResult.durationMinutes;
+        lastSegment.effectiveMinutes = segmentResult.effectiveMinutes;
+      } else {
+        // backward compatibility
+        lastSegment.cost = Math.round(segmentResult);
+      }
+
+      // ==============================
+      // Subtotal
+      // ==============================
 
       const subtotal = calculateSubtotal(session.segments);
+
+      // ==============================
+      // Discount
+      // ==============================
 
       const discountResult = await this.discountUseCase.execute({
         subtotal,
@@ -49,13 +75,40 @@ class FinishSessionUseCase {
         now,
       });
 
+      const taxableAmount = discountResult.finalAmount;
+
+      // ==============================
+      // Tax
+      // ==============================
+
+      const taxSetting = await SystemSetting.findOne({ key: "taxRate" }, null, {
+        session: mongoSession,
+      });
+
+      const taxRate = taxSetting ? taxSetting.value : 0;
+
+      const taxAmount = Math.round((taxableAmount * taxRate) / 100);
+
+      // ==============================
+      // Finalize Session
+      // ==============================
+
       session.subtotal = subtotal;
       session.discountAmount = discountResult.totalDiscountAmount;
-      session.totalCost = discountResult.finalAmount;
+      session.taxRate = taxRate;
+      session.taxAmount = taxAmount;
+      session.totalCost = taxableAmount + taxAmount;
+
       session.status = FINISHED;
       session.endedAt = now;
 
-      await this.sessionRepository.save(session, { session: mongoSession });
+      await this.sessionRepository.save(session, {
+        session: mongoSession,
+      });
+
+      // ==============================
+      // Increase Discount Usage
+      // ==============================
 
       for (const d of discountResult.appliedDiscounts) {
         await this.discountRepository.incrementUsageIfAvailable(
@@ -63,6 +116,10 @@ class FinishSessionUseCase {
           mongoSession,
         );
       }
+
+      // ==============================
+      // Free Resource
+      // ==============================
 
       await this.resourceRepository.updateStatus(
         session.resourceId,

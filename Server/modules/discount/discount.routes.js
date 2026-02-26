@@ -1,15 +1,23 @@
 const express = require("express");
 const authenticate = require("../../shared/middleware/auth.middleware");
 const authorize = require("../../shared/middleware/role.middleware");
-
 const controller = require("./discount.controller");
 
 const router = express.Router();
 
-// ساخت discount فقط admin
-router.post("/", authenticate, authorize("admin"), controller.createDiscount);
+router.post("/", authenticate, authorize("admin"), controller.create);
 
-// لیست discount ها
-router.get("/", authenticate, controller.getDiscounts);
+router.get("/", authenticate, controller.getAll);
+
+router.patch("/:id", authenticate, authorize("admin"), controller.update);
+
+router.delete("/:id", authenticate, authorize("admin"), controller.remove);
+
+router.patch(
+  "/:id/reset",
+  authenticate,
+  authorize("admin"),
+  controller.resetUsage,
+);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const {
-  selectDiscountsByPolicy,
+  filterValidDiscounts,
+  resolveDiscountStack,
   applyDiscounts,
 } = require("../domain/discount.policy");
 
@@ -25,66 +26,23 @@ class CalculateDiscountUseCase {
 
     const allDiscounts = await this.discountRepository.findActive();
 
-    // فیلتر اعتبار
-    const validDiscounts = allDiscounts.filter((d) => {
-      // تاریخ انقضا
-      if (d.expiresAt && d.expiresAt < now) {
-        return false;
-      }
-
-      // محدودیت resourceType
-      if (
-        d.applicableResourceTypes?.length &&
-        !d.applicableResourceTypes.some((id) => id.equals(resourceType))
-      ) {
-        return false;
-      }
-
-      // محدودیت tag
-      if (
-        d.applicableTags?.length &&
-        !customer?.tags?.some((tag) => d.applicableTags.includes(tag))
-      ) {
-        return false;
-      }
-
-      return true;
+    const valid = filterValidDiscounts(allDiscounts, {
+      now,
+      subtotal,
+      customer,
+      resourceType,
+      discountCode,
     });
 
-    // ===============================
-    // Policy:
-    // اگر discountCode داده شده باشد → فقط همان
-    // ===============================
+    const selected = resolveDiscountStack(valid);
 
-    if (discountCode) {
-      const codeDiscount = validDiscounts.find(
-        (d) => d.code === discountCode.toUpperCase(),
-      );
-
-      if (!codeDiscount) {
-        throw new Error("Invalid or expired discount code");
-      }
-
-      const result = applyDiscounts(subtotal, [codeDiscount]);
-
+    if (!selected.length) {
       return {
-        appliedDiscounts: [
-          {
-            id: codeDiscount._id,
-            name: codeDiscount.name,
-            type: codeDiscount.type,
-            value: codeDiscount.value,
-          },
-        ],
-        ...result,
+        appliedDiscounts: [],
+        totalDiscountAmount: 0,
+        finalAmount: subtotal,
       };
     }
-
-    // ===============================
-    // Tag-based policy
-    // ===============================
-
-    const selected = selectDiscountsByPolicy(validDiscounts);
 
     const result = applyDiscounts(subtotal, selected);
 

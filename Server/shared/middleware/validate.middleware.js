@@ -2,6 +2,12 @@ const BadRequestError = require("../errors/BadRequestError");
 
 function validate(schema) {
   return (req, res, next) => {
+    if (!schema || typeof schema.safeParse !== "function") {
+      return next(
+        new BadRequestError("Invalid validation schema configuration"),
+      );
+    }
+
     const result = schema.safeParse({
       body: req.body,
       params: req.params,
@@ -9,15 +15,20 @@ function validate(schema) {
     });
 
     if (!result.success) {
-      const message = result.error.errors.map((e) => e.message).join(", ");
+      const issues = result.error?.issues || result.error?.errors || [];
+
+      const message =
+        issues.length > 0
+          ? issues.map((e) => e.message).join(", ")
+          : "Validation failed";
 
       return next(new BadRequestError(message));
     }
 
-    // داده‌های sanitize شده را جایگزین کن
-    req.body = result.data.body;
-    req.params = result.data.params;
-    req.query = result.data.query;
+    // فقط اگر وجود داشت overwrite کن
+    if (result.data.body) req.body = result.data.body;
+    if (result.data.params) req.params = result.data.params;
+    if (result.data.query) req.query = result.data.query;
 
     next();
   };
